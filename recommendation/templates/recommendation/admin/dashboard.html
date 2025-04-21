@@ -1,0 +1,64 @@
+{% extends 'recommendation/admin/base.html' %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- Wider responsive cards using grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4 gap-10">
+
+  <!-- 🔹 Total Products Card -->
+  <div class="bg-white p-6 rounded-xl w-[300px] shadow-md">
+    <div class="flex justify-between items-center mb-3">
+      <div>
+        <p class="text-gray-500 text-sm">Total Products</p>
+        <p class="text-3xl font-bold">{{ total_products }}</p>
+      </div>
+      <div class="bg-[#335179] text-white p-3 rounded-full text-xl">
+        👜
+      </div>
+    </div>
+    <a href="{% url 'admin_products' %}" class="text-sm text-blue-600 hover:underline">View Products</a>
+  </div>
+
+  <!-- 🔸 Total Categories Card -->
+  <div class="bg-white p-6 rounded-xl shadow-md">
+    <div class="flex justify-between items-center mb-3">
+      <div>
+        <p class="text-gray-500 text-sm">Total Categories</p>
+        <p class="text-3xl font-bold">{{ total_categories }}</p>
+      </div>
+      <div class="bg-green-600 text-white p-3 rounded-full text-xl">
+        🗂️
+      </div>
+    </div>
+    <a href="{% url 'admin_categories' %}" class="text-sm text-blue-600 hover:underline">View Categories</a>
+  </div>
+
+  <!-- 🧍 Total Users Card -->
+<div class="bg-white p-6 rounded-xl shadow-md">
+  <div class="flex justify-between items-center mb-3">
+    <div>
+      <p class="text-gray-500 text-sm">Total Users</p>
+      <p class="text-3xl font-bold">{{ total_users }}</p>
+    </div>
+    <div class="bg-indigo-600 text-white p-3 rounded-full text-xl">
+      👥
+    </div>
+  </div>
+  <a href="#" class="text-sm text-blue-600 hover:underline">View Users</a>
+</div>
+
+<div class="bg-white p-6 rounded-xl shadow-md">
+  <div class="flex justify-between items-center mb-3">
+    <div>
+      <p class="text-gray-500 text-sm">Total Orders</p>
+      <p class="text-3xl font-bold">10</p>
+    </div>
+    <div class="bg-yellow-600 text-white p-3 rounded-full text-xl">
+      📦
+    </div>
+  </div>
+  <a href="#" class="text-sm text-blue-600 hover:underline">View Orders</a>
+</div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends 'recommendation/admin/base.html' %}
+{% load static %}
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+<div x-data="{ showAdd: false, showItems: {{ show_modal|yesno:'true,false' }}, showEdit: false, productData: {} }">
+
+  <!-- 🔹 Header -->
+  <div class="flex justify-between items-center mb-6">
+    <div class="flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V7z" />
+      </svg>
+      <h2 class="text-xl font-bold">Categories</h2>
+    </div>
+    <button @click="showAdd = true"
+            class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 text-sm">
+      + Add Category
+    </button>
+  </div>
+
+  <!-- 🔵 Add Category Modal -->
+  <div x-show="showAdd" class="fixed inset-0 bg-black bg-opacity-50 z-40" x-transition></div>
+  <div x-show="showAdd" class="fixed z-50 inset-0 flex items-center justify-center px-4" x-transition>
+    <div class="bg-white p-6 rounded shadow w-full max-w-md">
+      <h3 class="text-xl font-bold mb-4">Add Category</h3>
+      <form method="POST" action="{% url 'admin_categories' %}">
+        {% csrf_token %}
+        <input type="text" name="name" placeholder="Category Name"
+               class="w-full px-3 py-2 border rounded mb-4" required />
+        <div class="flex justify-end gap-3">
+          <button type="button" @click="showAdd = false" class="px-4 py-2 border rounded">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Add</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 🔷 Card View -->
+  <div class="grid  grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+    {% for cat in categories %}
+    <div class="bg-white min-h-[110px] rounded-lg shadow mb-6 px-4 mr-6 py-3 border border-gray-200 hover:ring-2 hover:ring-blue-500 transition flex items-center justify-evenly">
+      <a href="?category={{ cat.id }}" class="flex items-center gap-4 flex-1">
+        {% with cat.products.first as first_product %}
+          {% if first_product and first_product.image_file %}
+            <img src="{{ first_product.image_file.url }}" alt="Product" class="w-12 h-12 object-cover rounded border" />
+          {% else %}
+            <div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500 italic">
+              No Image
+            </div>
+          {% endif %}
+        {% endwith %}
+        <div>
+          <h3 class="text-md font-semibold text-gray-800">{{ cat.name }}</h3>
+          <p class="text-sm text-gray-500">{{ cat.products.count }} item{{ cat.products.count|pluralize }}</p>
+        </div>
+      </a>
+      <div class="flex gap-3 pl-4">
+        <a href="{% url 'edit_category' cat.id %}" class="text-blue-600 hover:text-blue-800" title="Edit">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M11 5h4M5 19l1.5-4.5 9.5-9.5a2 2 0 112.8 2.8l-9.5 9.5L5 19z" />
+          </svg>
+        </a>
+        <a href="{% url 'delete_category' cat.id %}" onclick="return confirm('Are you sure?')" class="text-red-600 hover:text-red-800" title="Delete">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </a>
+      </div>
+    </div>
+    {% empty %}
+    <p class="text-gray-500">No categories found.</p>
+    {% endfor %}
+  </div>
+
+  <!-- 🟡 Product Table Modal -->
+  {% if show_modal %}
+<div
+  x-show="showItems"
+  @click.self="showItems = false"
+  class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center px-4"
+>
+  <div
+    class="bg-white rounded-lg shadow-lg w-full max-w-5xl relative flex flex-col"
+    style="max-height: 85vh;"
+    @click.stop
+  >
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white z-20">
+      <h3 class="text-xl font-bold">Products in "{{ selected_category.name }}"</h3>
+      <button @click="showItems = false" class="text-gray-500 hover:text-red-600">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Table -->
+    <div class="overflow-y-auto" style="max-height: calc(85vh - 70px);">
+      <table class="min-w-full text-sm text-left border-separate border-spacing-0">
+        <thead class="bg-gray-100 text-gray-700 uppercase sticky top-0 z-10">
+          <tr>
+            <th class="px-4 py-3 border border-gray-200 bg-gray-100">SN</th>
+            <th class="px-4 py-3 border border-gray-200 bg-gray-100">Photo</th>
+            <th class="px-4 py-3 border border-gray-200 bg-gray-100">Product Name</th>
+            <th class="px-4 py-3 border border-gray-200 bg-gray-100">Price</th>
+            <th class="px-4 py-3 border border-gray-200 bg-gray-100">Quantity</th>
+            <th class="px-4 py-3 border border-gray-200 bg-gray-100">Category</th>
+            <th class="px-4 py-3 border border-gray-200 bg-gray-100">Operation</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-100">
+          {% for product in products %}
+          <tr>
+            <td class="px-4 py-3 border-b">{{ forloop.counter }}</td>
+            <td class="px-4 py-3 border-b">
+              {% if product.image_file %}
+              <img src="{{ product.image_file.url }}" alt="Product" class="w-10 h-10 rounded object-cover" />
+              {% else %}
+              <span class="text-gray-400 italic">No Image</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 border-b">{{ product.name }}</td>
+            <td class="px-4 py-3 border-b">{{ product.currency }} {{ product.price }}</td>
+            <td class="px-4 py-3 border-b">{{ product.quantity_available }}</td>
+            <td class="px-4 py-3 border-b">{{ product.category.name }}</td>
+            <td class="px-4 py-3 border-b flex gap-3">
+              <button
+                class="text-blue-600 hover:text-blue-800"
+                title="Edit"
+                @click="productData = {
+                  id: '{{ product.id }}',
+                  name: '{{ product.name }}',
+                  price: '{{ product.price }}',
+                  currency: '{{ product.currency }}',
+                  quantity: '{{ product.quantity_available }}',
+                  description: `{{ product.description|escapejs }}`,
+                  category: '{{ product.category.id }}'
+                }; showEdit = true"
+              >
+                ✏️
+              </button>
+              <a href="{% url 'delete_product' product.id %}" onclick="return confirm('Delete this product?')" class="text-red-600 hover:text-red-700" title="Delete">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+          {% if products|length == 0 %}
+          <tr>
+            <td colspan="7" class="px-4 py-6 text-center text-gray-500 italic">
+              No products found in this category.
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+{% include 'recommendation/admin/edit_product_modal.html' %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% load static %}
+
+<nav class="fixed top-0 left-0 right-0 z-40 bg-white shadow-sm border-b border-gray-200 px-6 py-3 flex justify-between items-center">
+  <!-- Logo -->
+  <div class="text-xl font-bold text-gray-800">HandiCraft</div>
+
+  <!-- Search Bar -->
+  <div class="w-1/2 relative">
+    <input
+      type="text"
+      placeholder="Search here..."
+      class="w-full pl-4 pr-10 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+    />
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke-width="1.5"
+      stroke="currentColor"
+      class="w-5 h-5 absolute top-2.5 right-3 text-gray-500"
+    >
+      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 1010.5 18a7.5 7.5 0 006.15-3.35z" />
+    </svg>
+  </div>
+
+  <!-- Right Side -->
+  <div class="flex items-center gap-6 relative">
+    <!-- Bell -->
+    <button class="text-gray-500 hover:text-gray-700">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+      </svg>
+    </button>
+
+    <!-- Avatar Dropdown -->
+    <div class="relative">
+      <button id="avatarBtn">
+        <img src="{% static 'images/admin-avatar.png' %}" alt="Admin" class="w-9 h-9 rounded-full border object-cover cursor-pointer" />
+      </button>
+
+      <div id="dropdownMenu" class="absolute right-0 mt-2 w-40 bg-white border rounded shadow-md hidden z-50">
+        <a href="{% url 'admin_logout' %}" class="block px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+          Logout
+        </a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Optional padding to prevent content being hidden -->
+<div class="pt-[64px]"></div>
+
+<!-- Dropdown Script -->
+<script>
+  const avatarBtn = document.getElementById('avatarBtn');
+  const dropdownMenu = document.getElementById('dropdownMenu');
+
+  avatarBtn.addEventListener('click', () => {
+    dropdownMenu.classList.toggle('hidden');
+  });
+
+  window.addEventListener('click', function(e) {
+    if (!avatarBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+      dropdownMenu.classList.add('hidden');
+    }
+  });
+</script>

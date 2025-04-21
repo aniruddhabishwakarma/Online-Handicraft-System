@@ -1,0 +1,29 @@
+<nav class="bg-white shadow-md px-10 py-5 flex justify-between items-center text-lg fixed top-0 left-0 right-0 z-50">
+  <!-- Left: Logo -->
+  <div class="text-2xl font-bold text-gray-900">HandiCraft</div>
+
+  <!-- Center: Navigation Links -->
+  <ul class="hidden md:flex space-x-10 font-medium text-gray-800">
+    <li><a href="#" class="hover:text-blue-600">Home</a></li>
+    <li><a href="#" class="hover:text-blue-600">Shop By Category</a></li>
+    <li><a href="#" class="hover:text-blue-600">Product</a></li>
+    <li><a href="#" class="hover:text-blue-600">About Us</a></li>
+  </ul>
+
+  <!-- Right: Search + Icons -->
+  <div class="flex items-center gap-6">
+    <!-- Cart Icon -->
+    <a href="#" title="Cart">
+      <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 7h11l-1.5-7M7 13H5.4M16 17a1 1 0 100 2 1 1 0 000-2zM8 17a1 1 0 100 2 1 1 0 000-2z" />
+      </svg>
+    </a>
+
+    <!-- Login Button -->
+    <a href="{% url 'user_login' %}"
+       class="bg-[#335179] text-white text-base px-6 py-2 rounded-full hover:bg-[#2c4465]">
+      Login
+    </a>
+  </div>
+</nav>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Admin Panel{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+</head>
+<body class="bg-gray-100">
+
+  <!-- Top Navbar -->
+  {% include 'recommendation/admin/navbar.html' %}
+
+  <div class="flex">
+    <!-- Sidebar -->
+    {% include 'recommendation/admin/sidebar.html' %}
+
+    <!-- Main Content Area -->
+    <main class="ml-64 pt-[64px] p-6">
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</body>
+</html>

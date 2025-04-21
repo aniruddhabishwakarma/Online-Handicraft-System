@@ -1,0 +1,48 @@
+<aside class="fixed  top-[70px] left-0 w-64 h-[calc(100vh-70px)] bg-gray-100 p-4 border-r space-y-3 shadow-md ">
+
+  <!-- Dashboard Link -->
+  <a href="{% url 'admin_dashboard' %}"
+     class="flex items-center gap-3 p-3 rounded-lg font-medium shadow-sm
+            {% if request.resolver_match.url_name == 'admin_dashboard' %}
+              bg-white text-black
+            {% else %}
+              hover:bg-white text-gray-700
+            {% endif %}">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM13 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1V4zM4 14a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 14a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3z" />
+    </svg>
+    Dashboard
+  </a>
+
+  <!-- Products Link -->
+  <a href="{% url 'admin_products' %}"
+     class="flex items-center gap-3 p-3 rounded-lg font-medium shadow-sm
+            {% if request.resolver_match.url_name == 'admin_products' %}
+              bg-white text-black
+            {% else %}
+              hover:bg-white text-gray-700
+            {% endif %}">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M20 13V7a2 2 0 00-2-2h-5a2 2 0 00-2 2v6M9 21H5a2 2 0 01-2-2v-5a2 2 0 012-2h4a2 2 0 012 2v5a2 2 0 01-2 2zM20 21h-4a2 2 0 01-2-2v-5a2 2 0 012-2h4a2 2 0 012 2v5a2 2 0 01-2 2z" />
+    </svg>
+    Products
+  </a>
+
+  <!-- Categories Link -->
+  <a href="{% url 'admin_categories' %}"
+     class="flex items-center gap-3 p-3 rounded-lg font-medium shadow-sm
+            {% if request.resolver_match.url_name == 'admin_categories' %}
+              bg-white text-black
+            {% else %}
+              hover:bg-white text-gray-700
+            {% endif %}">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M4 6h16M4 10h16M4 14h10" />
+    </svg>
+    Categories
+  </a>
+
+</aside>

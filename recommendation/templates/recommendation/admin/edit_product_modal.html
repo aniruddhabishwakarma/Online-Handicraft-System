@@ -1,0 +1,30 @@
+<!-- reusable product edit modal -->
+<div x-show="showEdit" x-transition class="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center px-4">
+    <div @click.away="showEdit = false" class="bg-white rounded-lg shadow-lg w-full max-w-2xl relative flex flex-col overflow-auto max-h-[90vh]">
+      <div class="flex items-center justify-between px-6 py-4 border-b sticky top-0 bg-white z-10">
+        <h2 class="text-2xl font-bold">Edit Product</h2>
+        <button @click="showEdit = false" class="text-gray-500 hover:text-red-600">✕</button>
+      </div>
+      <form :action="`/admin/products/edit/${productData.id}/`" method="POST" enctype="multipart/form-data" class="p-6">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input type="text" name="name" x-model="productData.name" class="border px-3 py-2 rounded w-full" required>
+          <input type="text" name="price" x-model="productData.price" class="border px-3 py-2 rounded w-full" required>
+          <input type="text" name="currency" x-model="productData.currency" class="border px-3 py-2 rounded w-full">
+          <input type="number" name="quantity_available" x-model="productData.quantity" class="border px-3 py-2 rounded w-full" required>
+          <input type="file" name="image_file" class="border px-3 py-2 rounded w-full" accept="image/*">
+          <select name="category" x-model="productData.category" class="border px-3 py-2 rounded w-full" required>
+            {% for cat in categories %}
+            <option value="{{ cat.id }}">{{ cat.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <textarea name="description" x-model="productData.description" rows="4" class="mt-4 border px-3 py-2 rounded w-full" required></textarea>
+        <div class="flex justify-end gap-3 mt-4">
+          <button type="button" @click="showEdit = false" class="px-4 py-2 border rounded">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-[#335179] text-white rounded hover:bg-[#2c4465]">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
