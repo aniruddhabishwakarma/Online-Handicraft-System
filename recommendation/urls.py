@@ -19,6 +19,11 @@ urlpatterns = [
     path('logout/', logout_view, name='user_logout'),
 
 
+    path('profile/', profile_view, name='user_profile'),
+    path('profile/edit/', edit_profile_view, name='edit_profile'),
+    path('profile/change-password/', change_password_view, name='change_password'),
+
+
     # Admin Panel
     # Category management
     path('admin/categories/', category_list, name='admin_categories'),

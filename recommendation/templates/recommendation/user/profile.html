@@ -1,0 +1,43 @@
+{% extends 'recommendation/user/base.html' %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-[#f3f4f6] py-10 px-4 sm:px-8 lg:px-16">
+  <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-md border border-gray-200">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">My Profile</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <div>
+        <p class="text-sm text-gray-500 mb-1">Full Name</p>
+        <p class="font-medium text-gray-800">{{ user.full_name }}</p>
+      </div>
+
+      <div>
+        <p class="text-sm text-gray-500 mb-1">Username</p>
+        <p class="font-medium text-gray-800">{{ user.username }}</p>
+      </div>
+
+      <div>
+        <p class="text-sm text-gray-500 mb-1">Email</p>
+        <p class="font-medium text-gray-800">{{ user.email }}</p>
+      </div>
+
+      <div>
+        <p class="text-sm text-gray-500 mb-1">Contact</p>
+        <p class="font-medium text-gray-800">{{ user.contact|default:"Not Provided" }}</p>
+      </div>
+
+      <div>
+        <p class="text-sm text-gray-500 mb-1">Joined</p>
+        <p class="font-medium text-gray-800">{{ user.date_joined|date:"F j, Y" }}</p>
+      </div>
+    </div>
+
+    <div class="mt-8 text-right">
+        <a href="{% url 'edit_profile' %}" class="bg-[#335179] hover:bg-[#2c4465] text-white px-6 py-2 rounded-full text-sm font-medium">
+            Edit Profile
+        </a>
+    </div>
+  </div>
+</div>
+{% endblock %}

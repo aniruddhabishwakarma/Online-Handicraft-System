@@ -3,23 +3,24 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from ..forms import UserRegistrationForm, UserLoginForm
 from ..models import User
+from django.contrib import messages
 
-# USER LOGIN VIEW
 def user_login_view(request):
     if request.method == 'POST':
-        form = UserLoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        if not email or not password:
+            messages.error(request, "Both fields are required.")
+        else:
             user = authenticate(email=email, password=password)
             if user and user.role == 'USER':
                 login(request, user)
-                return redirect('user_panel')
-            form.add_error(None, "Invalid credentials or not a user account.")
-    else:
-        form = UserLoginForm()
-    return render(request, 'recommendation/user/login.html', {'form': form})
+                return redirect('home')
+            else:
+                messages.error(request, "Invalid credentials or not a user account.")
 
+    return render(request, 'recommendation/user/login.html')
 
 def admin_login_view(request):
     if request.method == 'POST':
@@ -38,19 +39,40 @@ def admin_login_view(request):
     return render(request, 'recommendation/admin/login.html', {'form': form})
 
 
-# REGISTER USER
 def register_view(request):
     if request.method == 'POST':
-        form = UserRegistrationForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-            return redirect('user_login')  # user login
-    else:
-        form = UserRegistrationForm()
-    return render(request, 'recommendation/user/register.html', {'form': form})
+        email = request.POST.get('email')
+        username = request.POST.get('username')
+        full_name = request.POST.get('full_name')
+        contact = request.POST.get('contact')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
 
+        # 🔒 Basic validations
+        if not all([email, username, full_name, contact, password, confirm_password]):
+            messages.error(request, "All fields are required.")
+        elif password != confirm_password:
+            messages.error(request, "Passwords do not match.")
+        elif User.objects.filter(email=email).exists():
+            messages.error(request, "Email already in use.")
+        elif User.objects.filter(username=username).exists():
+            messages.error(request, "Username already taken.")
+        else:
+            # ✅ Create user
+            user = User.objects.create_user(
+                email=email,
+                username=username,
+                full_name=full_name,
+                contact=contact,
+                password=password,
+                role='USER'
+            )
+            messages.success(request, "Account created successfully. Please login.")
+            return redirect('user_login')  # ✅ Success redirect
+
+    # 🟡 Always render template for both GET and failed POST
+    return render(request, 'recommendation/user/register.html')
+    
 
 # LOGOUT
 def logout_view(request):

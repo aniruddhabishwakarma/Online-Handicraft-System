@@ -1,29 +1,42 @@
+{% load static %}
+
 <nav class="bg-white shadow-md px-10 py-5 flex justify-between items-center text-lg fixed top-0 left-0 right-0 z-50">
   <!-- Left: Logo -->
   <div class="text-2xl font-bold text-gray-900">HandiCraft</div>
 
   <!-- Center: Navigation Links -->
   <ul class="hidden md:flex space-x-10 font-medium text-gray-800">
-    <li><a href="#" class="hover:text-blue-600">Home</a></li>
+    <li><a href="{% url 'home' %}" class="hover:text-blue-600">Home</a></li>
     <li><a href="#" class="hover:text-blue-600">Shop By Category</a></li>
     <li><a href="#" class="hover:text-blue-600">Product</a></li>
     <li><a href="#" class="hover:text-blue-600">About Us</a></li>
   </ul>
 
-  <!-- Right: Search + Icons -->
+  <!-- Right Side: Search, Cart, User -->
   <div class="flex items-center gap-6">
-    <!-- Cart Icon -->
-    <a href="#" title="Cart">
-      <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 7h11l-1.5-7M7 13H5.4M16 17a1 1 0 100 2 1 1 0 000-2zM8 17a1 1 0 100 2 1 1 0 000-2z" />
-      </svg>
-    </a>
+  
 
-    <!-- Login Button -->
+    {% if request.user.is_authenticated %}
+    <!-- 👤 User Icon with Dropdown -->
+    <div x-data="{ open: false }" class="relative">
+      <button @click="open = !open" class="focus:outline-none" title="Profile">
+        <!-- 👇 Your uploaded profile icon -->
+        <img src="{% static 'images/admin-avatar.png' %}" alt="Profile" class="w-6 h-6 rounded-full object-cover" />
+      </button>
+    
+      <!-- Dropdown -->
+      <div x-show="open" @click.away="open = false" x-transition
+           class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+        <a href="{% url 'user_profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+        <a href="{% url 'user_logout' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Logout</a>
+      </div>
+    </div>
+    {% else %}
+    <!-- Login Button if not authenticated -->
     <a href="{% url 'user_login' %}"
        class="bg-[#335179] text-white text-base px-6 py-2 rounded-full hover:bg-[#2c4465]">
       Login
     </a>
+    {% endif %}
   </div>
 </nav>
