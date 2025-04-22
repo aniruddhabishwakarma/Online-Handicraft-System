@@ -1,2 +1,2 @@
 from .user_model import User
-from .product_model import HandicraftProduct, Category
+from .product_model import HandicraftProduct, Category, Question, Answer

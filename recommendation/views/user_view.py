@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from recommendation.models import HandicraftProduct 
+from recommendation.models import HandicraftProduct, Category
 import random
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
 from django.views.decorators.http import require_POST
+from django.db.models import Count
 
 
 User = get_user_model()
@@ -17,10 +18,19 @@ def home_view(request):
 
     trending_products = all_products[:10]
     more_products = all_products[5:15]
+    categories = Category.objects.annotate(product_count=Count('products'))
+
+    # Random category with at least 1 product
+    category_with_products = [cat for cat in categories if cat.products.exists()]
+    random_category = random.choice(category_with_products) if category_with_products else None
+    random_category_products = random_category.products.all()[:10] if random_category else []
 
     return render(request, 'recommendation/user/home.html', {
         'trending_products': trending_products,
         'more_products': more_products,
+        'categories': categories,
+        'random_category': random_category,
+        'random_category_products': random_category_products
     })
 
 @login_required

@@ -5,26 +5,39 @@
   <div class="text-2xl font-bold text-gray-900">HandiCraft</div>
 
   <!-- Center: Navigation Links -->
-  <ul class="hidden md:flex space-x-10 font-medium text-gray-800">
+  <ul class="hidden md:flex space-x-10 mx-auto font-medium text-gray-800">
     <li><a href="{% url 'home' %}" class="hover:text-blue-600">Home</a></li>
     <li><a href="#" class="hover:text-blue-600">Shop By Category</a></li>
-    <li><a href="#" class="hover:text-blue-600">Product</a></li>
     <li><a href="#" class="hover:text-blue-600">About Us</a></li>
   </ul>
 
-  <!-- Right Side: Search, Cart, User -->
+  <!-- Right Side: Search, Cart, User/Login -->
   <div class="flex items-center gap-6">
-  
+
+    <!-- 🔍 Search Bar -->
+    <form action="{% url 'home' %}" method="GET" class="relative">
+      <input type="text" name="q" id="searchInput" placeholder="Search products..."
+             class="border border-gray-300 rounded-full px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-80" />
+      <!-- Search results dropdown -->
+      <div id="searchResults" class="absolute bg-white shadow-md w-80 mt-1 rounded hidden z-50"></div>
+    </form>
+
+    <!-- 🛒 Cart Icon (optional) -->
+    <a href="#" title="Cart">
+      <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5 7h11l-1.5-7M7 13H5.4M16 17a1 1 0 100 2 1 1 0 000-2zM8 17a1 1 0 100 2 1 1 0 000-2z" />
+      </svg>
+    </a>
 
     {% if request.user.is_authenticated %}
-    <!-- 👤 User Icon with Dropdown -->
+    <!-- 👤 Profile Dropdown -->
     <div x-data="{ open: false }" class="relative">
       <button @click="open = !open" class="focus:outline-none" title="Profile">
-        <!-- 👇 Your uploaded profile icon -->
         <img src="{% static 'images/admin-avatar.png' %}" alt="Profile" class="w-6 h-6 rounded-full object-cover" />
       </button>
-    
-      <!-- Dropdown -->
+
+      <!-- Dropdown Menu -->
       <div x-show="open" @click.away="open = false" x-transition
            class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-md shadow-lg z-50">
         <a href="{% url 'user_profile' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
@@ -32,7 +45,7 @@
       </div>
     </div>
     {% else %}
-    <!-- Login Button if not authenticated -->
+    <!-- 🔐 Login Button -->
     <a href="{% url 'user_login' %}"
        class="bg-[#335179] text-white text-base px-6 py-2 rounded-full hover:bg-[#2c4465]">
       Login
@@ -40,3 +53,37 @@
     {% endif %}
   </div>
 </nav>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+      const input = document.getElementById('searchInput');
+      const resultsBox = document.getElementById('searchResults');
+  
+      input.addEventListener('input', async function () {
+          const query = this.value.trim();
+  
+          if (query.length > 0) {
+              const response = await fetch(`/search/products/?q=${query}`);
+              const results = await response.json();
+  
+              resultsBox.innerHTML = results.map(item => `
+                  <a href="/product/${item.id}/" class="flex items-center gap-3 px-4 py-3 hover:bg-gray-100 text-sm border-b">
+                    <img src="${item.image_url}" alt="${item.name}" class="w-8 h-8 object-cover rounded" />
+                    <span>${item.name}</span>
+                  </a>
+              `).join('');
+  
+              resultsBox.classList.remove('hidden');
+          } else {
+              resultsBox.innerHTML = '';
+              resultsBox.classList.add('hidden');
+          }
+      });
+  
+      document.addEventListener('click', (e) => {
+          if (!resultsBox.contains(e.target) && e.target !== input) {
+              resultsBox.classList.add('hidden');
+          }
+      });
+  });
+  </script>

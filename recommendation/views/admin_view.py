@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from recommendation.decorators import admin_required
 from django.contrib.auth import logout
 from django.core.paginator import Paginator
@@ -24,6 +24,34 @@ def admin_dashboard(request):
         'total_categories': total_categories,
         'total_users': total_users,
     })
+
+@admin_required
+def admin_questions_view(request):
+    questions = Question.objects.all().order_by('-created_at')  # You can filter unanswered if you want
+
+    return render(request, 'recommendation/admin/questions.html', {
+        'questions': questions
+    })
+
+@admin_required
+def admin_answer_question(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+
+    if request.method == 'POST':
+        answer_text = request.POST.get('answer')
+        if answer_text:
+            # Create the answer
+            answer = Answer.objects.create(
+                question=question,
+                responder=request.user,
+                content=answer_text
+            )
+
+            # Update question status
+            question.status = 'ANSWERED'
+            question.save()
+
+    return redirect('admin_questions')
 
 
 def admin_logout_view(request):

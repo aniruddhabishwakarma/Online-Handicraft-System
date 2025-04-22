@@ -1,7 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from recommendation.models import HandicraftProduct, Category
+from recommendation.models import HandicraftProduct, Category, Question
 from recommendation.decorators import admin_required
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 @admin_required
 def list_products(request):
@@ -78,7 +80,51 @@ def delete_product(request, pk):
 
 def product_detail_view(request, id):
     product = get_object_or_404(HandicraftProduct, id=id)
-    return render(request, 'recommendation/user/product_detail.html', {'product': product})
+    questions = Question.objects.filter(product=product).order_by('-created_at')
+    return render(request, 'recommendation/user/product_detail.html', {
+        'product': product,
+        'questions': questions,
+        })
 
+def search_products_view(request):
+    query = request.GET.get('q', '')
+    products = HandicraftProduct.objects.filter(name__icontains=query)[:5]
+
+    results = [{
+        'id': p.id,
+        'name': p.name,
+        'image_url': p.image_file.url if p.image_file else '/static/images/default.png'
+    } for p in products]
+
+    return JsonResponse(results, safe=False)
+
+@login_required
+def add_question_view(request, product_id):
+    product = get_object_or_404(HandicraftProduct, id=product_id)
+
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Question.objects.create(
+                product=product,
+                user=request.user,
+                content=content,
+                status='UNANSWERED'
+            )
+        # Redirect back to the same product page after posting
+        return redirect('product_detail', id=product.id)
+
+    # In case someone visits directly (not typical), redirect to product page
+    return redirect('product_detail', product_id=product.id)
+
+
+def category_products_view(request, category_id):
+    category = get_object_or_404(Category, id=category_id)
+    products = HandicraftProduct.objects.filter(category=category)
+
+    return render(request, 'recommendation/user/category_products.html', {
+        'category': category,
+        'products': products,
+    })
 
 

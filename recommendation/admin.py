@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from recommendation.models import User  # from the __init__.py import
-from recommendation.models import HandicraftProduct
+from recommendation.models import *
 
 class UserAdmin(BaseUserAdmin):
     model = User
@@ -26,3 +26,6 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User, UserAdmin)
 admin.site.register(HandicraftProduct)
+admin.site.register(Question)
+admin.site.register(Answer)
+admin.site.register(Category)

@@ -1,4 +1,4 @@
-<aside class="fixed  top-[70px] left-0 w-64 h-[calc(100vh-70px)] bg-gray-100 p-4 border-r space-y-3 shadow-md ">
+<aside class="fixed top-[70px] left-0 w-64 h-[calc(100vh-70px)] bg-gray-100 p-4 border-r space-y-3 shadow-md">
 
   <!-- Dashboard Link -->
   <a href="{% url 'admin_dashboard' %}"
@@ -43,6 +43,21 @@
             d="M4 6h16M4 10h16M4 14h10" />
     </svg>
     Categories
+  </a>
+
+  <!-- 🔥 Questions Link -->
+  <a href="{% url 'admin_questions' %}"
+     class="flex items-center gap-3 p-3 rounded-lg font-medium shadow-sm
+            {% if request.resolver_match.url_name == 'admin_questions' %}
+              bg-white text-black
+            {% else %}
+              hover:bg-white text-gray-700
+            {% endif %}">
+    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 10h.01M12 10h.01M16 10h.01M21 16H3V4a1 1 0 011-1h16a1 1 0 011 1v12z" />
+    </svg>
+    Queries 
   </a>
 
 </aside>

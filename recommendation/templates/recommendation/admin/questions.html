@@ -1,0 +1,54 @@
+{% extends 'recommendation/admin/base.html' %}
+{% block title %}Questions{% endblock %}
+
+{% block content %}
+<div class="mb-6">
+  <h2 class="text-2xl font-bold text-gray-800">User Queries</h2>
+  <p class="text-sm text-gray-600">Manage product questions submitted by users.</p>
+</div>
+
+{% if questions %}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    {% for q in questions %}
+      <div class="bg-white border rounded-lg shadow-sm p-4">
+        <div class="flex justify-between items-center mb-2">
+          <div>
+            <h4 class="font-semibold text-gray-800">
+              {{ q.user.username }}
+              <span class="text-gray-500 text-sm">• {{ q.created_at|date:"M d, Y" }}</span>
+            </h4>
+            <p class="text-sm text-gray-600 italic">For: {{ q.product.name }}</p>
+          </div>
+          <span class="text-xs px-2 py-1 rounded-full 
+            {% if q.status == 'ANSWERED' %} bg-green-100 text-green-700 
+            {% else %} bg-yellow-100 text-yellow-700 
+            {% endif %}">
+            {{ q.status|capfirst }}
+          </span>
+        </div>
+  
+        <p class="text-gray-700 text-sm mb-3">❓ {{ q.content }}</p>
+  
+        {% if q.status == 'UNANSWERED' %}
+          <form method="POST" action="{% url 'admin_answer_question' q.id %}" class="mt-3 space-y-2">
+            {% csrf_token %}
+            <textarea name="answer" rows="2" required
+              class="w-full text-sm border rounded px-3 py-2 focus:outline-none focus:ring focus:border-blue-300"
+              placeholder="Write your answer here..."></textarea>
+            <button type="submit" class="bg-[#335179] text-white text-sm px-4 py-2 rounded hover:bg-[#2c4465]">
+              Submit Answer
+            </button>
+          </form>
+        {% else %}
+          <p class="text-sm text-gray-700 mt-2">
+            💬 <span class="font-medium">Answer:</span> {{ q.answer.content }}
+          </p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  
+{% else %}
+  <p class="text-gray-600 italic">No questions submitted yet.</p>
+{% endif %}
+{% endblock %}
