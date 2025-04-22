@@ -74,3 +74,11 @@ def delete_product(request, pk):
     product = get_object_or_404(HandicraftProduct, pk=pk)
     product.delete()
     return redirect('admin_products')
+
+
+def product_detail_view(request, id):
+    product = get_object_or_404(HandicraftProduct, id=id)
+    return render(request, 'recommendation/user/product_detail.html', {'product': product})
+
+
+

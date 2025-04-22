@@ -5,6 +5,7 @@ import random
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
+from django.views.decorators.http import require_POST
 
 
 User = get_user_model()
@@ -73,3 +74,12 @@ def change_password_view(request):
             return redirect('user_profile')
 
     return render(request, 'recommendation/user/change_password.html')
+
+
+@require_POST
+def add_to_cart_view(request, id):
+    quantity = int(request.POST.get('quantity', 1))
+    cart = request.session.get('cart', {})
+    cart[str(id)] = cart.get(str(id), 0) + quantity
+    request.session['cart'] = cart
+    return redirect('product_detail', id=id)
