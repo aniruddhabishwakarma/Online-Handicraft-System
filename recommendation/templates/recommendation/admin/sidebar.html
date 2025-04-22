@@ -60,4 +60,19 @@
     Queries 
   </a>
 
+  <!-- Orders Link -->
+<a href="{% url 'admin_orders' %}"
+class="flex items-center gap-3 p-3 rounded-lg font-medium shadow-sm
+       {% if request.resolver_match.url_name == 'admin_orders' %}
+         bg-white text-black
+       {% else %}
+         hover:bg-white text-gray-700
+       {% endif %}">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+       d="M3 3h18M3 7h18M6 11h12M6 15h12M10 19h4" />
+</svg>
+Orders
+</a>
+
 </aside>

@@ -1,12 +1,15 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from recommendation.models import HandicraftProduct, Category
+from django.shortcuts import render, redirect,get_object_or_404
+from recommendation.models import HandicraftProduct, Category, Cart, Order
 import random
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth import update_session_auth_hash
 from django.views.decorators.http import require_POST
 from django.db.models import Count
+from django.urls import reverse
+from recommendation.utils.recommendation_utils import get_collaborative_recommendations
+
 
 
 User = get_user_model()
@@ -25,12 +28,18 @@ def home_view(request):
     random_category = random.choice(category_with_products) if category_with_products else None
     random_category_products = random_category.products.all()[:10] if random_category else []
 
+    recommended_products = []
+    if request.user.is_authenticated:
+        recommended_products = get_collaborative_recommendations(request.user.id)
+
+
     return render(request, 'recommendation/user/home.html', {
         'trending_products': trending_products,
         'more_products': more_products,
         'categories': categories,
         'random_category': random_category,
-        'random_category_products': random_category_products
+        'random_category_products': random_category_products,
+        'recommended_products': recommended_products,
     })
 
 @login_required
@@ -85,11 +94,39 @@ def change_password_view(request):
 
     return render(request, 'recommendation/user/change_password.html')
 
+@login_required
+def place_order_view(request, product_id):
+    if request.method == 'POST':
+        product = get_object_or_404(HandicraftProduct, id=product_id)
 
-@require_POST
-def add_to_cart_view(request, id):
-    quantity = int(request.POST.get('quantity', 1))
-    cart = request.session.get('cart', {})
-    cart[str(id)] = cart.get(str(id), 0) + quantity
-    request.session['cart'] = cart
-    return redirect('product_detail', id=id)
+        try:
+            quantity = int(request.POST.get('quantity') or 1)
+        except ValueError:
+            quantity = 1  # fallback in case of bad data
+
+        # Prevent invalid or zero quantity
+        if quantity <= 0:
+            quantity = 1
+
+        # Check stock and place order
+        if product.quantity_available >= quantity:
+            Order.objects.create(
+                user=request.user,
+                product=product,
+                quantity=quantity
+            )
+            product.quantity_available -= quantity
+            product.save()
+
+            # ✅ Redirect to My Orders page after order
+            return redirect('my_orders')
+
+        # If out of stock, go back to product page (optional: show message)
+        return redirect(reverse('product_detail', kwargs={'id': product.id}))
+    
+@login_required
+def my_orders_view(request):
+    orders = Order.objects.filter(user=request.user).select_related('product').order_by('-order_date')
+    return render(request, 'recommendation/user/my_orders.html', {
+        'orders': orders
+    })

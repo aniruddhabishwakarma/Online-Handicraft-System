@@ -20,14 +20,15 @@ urlpatterns = [
 
     path('search/products/', search_products_view, name='search_products'),
     path('product/<int:id>/', product_detail_view, name='product_detail'),
-    path('product/<int:id>/add-to-cart/', add_to_cart_view, name='add_to_cart'),
     path('product/<int:product_id>/ask/', add_question_view, name='add_question'),
     path('category/<int:category_id>/products/', category_products_view, name='category_products'),
+    path('product/<int:product_id>/order/', place_order_view, name='place_order'),
 
 
     path('profile/', profile_view, name='user_profile'),
     path('profile/edit/', edit_profile_view, name='edit_profile'),
     path('profile/change-password/', change_password_view, name='change_password'),
+    path('my-orders/', my_orders_view, name='my_orders'),
 
 
     # Admin Panel
@@ -43,6 +44,9 @@ urlpatterns = [
     path('admin/products/delete/<int:pk>/', delete_product, name='delete_product'),
     path('admin/questions/', admin_questions_view, name='admin_questions'),
     path('admin/questions/answer/<int:question_id>/', admin_answer_question, name='admin_answer_question'),
+    path('admin/orders/', admin_orders_view, name='admin_orders'),
+    path('admin/orders/confirm/<int:order_id>/', confirm_order_view, name='confirm_order'),
+
 
 
 

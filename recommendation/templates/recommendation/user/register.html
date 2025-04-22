@@ -7,13 +7,6 @@
     <h2 class="text-center text-2xl font-bold mb-6">Create Account</h2>
 
     <!-- Show error messages -->
-    {% if messages %}
-      <ul class="mb-4">
-        {% for message in messages %}
-          <li class="text-sm text-red-600">{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
 
     <form method="POST" novalidate>
       {% csrf_token %}

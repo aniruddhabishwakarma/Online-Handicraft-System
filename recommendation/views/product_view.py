@@ -4,6 +4,7 @@ from recommendation.decorators import admin_required
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from recommendation.utils.recommendation_utils import *
 
 @admin_required
 def list_products(request):
@@ -81,9 +82,14 @@ def delete_product(request, pk):
 def product_detail_view(request, id):
     product = get_object_or_404(HandicraftProduct, id=id)
     questions = Question.objects.filter(product=product).order_by('-created_at')
+    ordered = request.GET.get("ordered") == "true"
+
+    similar_products = get_similar_products(product)
     return render(request, 'recommendation/user/product_detail.html', {
         'product': product,
         'questions': questions,
+        'ordered': ordered, 
+        'similar_products': similar_products,
         })
 
 def search_products_view(request):

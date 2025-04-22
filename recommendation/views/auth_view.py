@@ -6,6 +6,8 @@ from ..models import User
 from django.contrib import messages
 
 def user_login_view(request):
+    next_url = request.GET.get('next') or request.POST.get('next') or 'home'
+
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -16,11 +18,11 @@ def user_login_view(request):
             user = authenticate(email=email, password=password)
             if user and user.role == 'USER':
                 login(request, user)
-                return redirect('home')
+                return redirect(next_url)
             else:
                 messages.error(request, "Invalid credentials or not a user account.")
 
-    return render(request, 'recommendation/user/login.html')
+    return render(request, 'recommendation/user/login.html', {'next': next_url})
 
 def admin_login_view(request):
     if request.method == 'POST':

@@ -50,14 +50,14 @@
 <div class="bg-white p-6 rounded-xl shadow-md">
   <div class="flex justify-between items-center mb-3">
     <div>
-      <p class="text-gray-500 text-sm">Total Orders</p>
-      <p class="text-3xl font-bold">10</p>
+      <p class="text-gray-500 text-sm">Items Sold</p>
+      <p class="text-3xl font-bold">{{total_items_sold}}</p>
     </div>
     <div class="bg-yellow-600 text-white p-3 rounded-full text-xl">
       📦
     </div>
   </div>
-  <a href="#" class="text-sm text-blue-600 hover:underline">View Orders</a>
+  <a href = "{% url 'admin_orders' %}" class="text-sm text-blue-600 hover:underline">View Orders</a>
 </div>
 
 </div>

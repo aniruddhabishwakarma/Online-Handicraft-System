@@ -64,6 +64,24 @@
   </div>
 </section>
 
+{% if recommended_products %}
+<section class="py-12 px-4 sm:px-8 lg:px-16">
+  <h2 class="text-xl md:text-2xl font-semibold mb-6">Recommended For You</h2>
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-x-10 gap-y-12">
+    {% for product in recommended_products %}
+      <a href="{% url 'product_detail' product.id %}" class="bg-white rounded-lg shadow transition-transform duration-300 transform hover:scale-105 relative flex flex-col">
+        <img src="{{ product.image_file.url }}" alt="{{ product.name }}" class="w-full h-80 object-cover" />
+        <div class="flex flex-col justify-between flex-1 px-4 pt-2 pb-4">
+          <div class="text-base font-semibold text-gray-800 truncate">{{ product.name }}</div>
+          <p class="text-sm font-semibold mt-1">{{ product.currency }} {{ product.price }}</p>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+
 {% if random_category %}
 <section class="py-5 px-4 sm:px-8 lg:px-16 mb-2 mt-2">
   <h2 class="text-xl md:text-2xl font-semibold mb-6">Explore {{ random_category.name }}</h2>
